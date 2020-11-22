@@ -1,6 +1,6 @@
+"""Fish module describes fish behavior"""
 import random
 import json
-import random
 
 import pool
 
@@ -8,7 +8,12 @@ X, Y = 0, 1
 
 
 class Fish:
+    """
+    Fish class.
+    Methods descriptions goes here
+    """
     def __init__(self, x, y):
+        """Fish init method description"""
         self._pos = [x, y]
         self._life_counter = 10
         self._born_rate = 0
@@ -16,40 +21,48 @@ class Fish:
         self._is_not_hungry = 0
 
     def get_pos(self):
+        """get fish position function"""
         return self._pos
 
-    def move(self, p: pool.Pool) -> tuple:
+    def move(self, pool_var: pool.Pool) -> None:
+        """Move method"""
         self._life_counter -= 1
-        self._move(p)
-        self.place_in_bounds(p)
+        self._move(pool_var)
+        self.place_in_bounds(pool_var)
 
     def is_alive(self):
+        """Fish method description"""
         return self._life_counter > 0
 
-    def _move(self, p: pool.Pool):
-        pass
+    def _move(self, pool_var: pool.Pool):
+        """Fish method description"""
 
-    def is_victim(self) -> bool:
+    @staticmethod
+    def is_victim() -> bool:
+        """Fish method description"""
         return False
 
-    def place_in_bounds(self, p: list):
+    def place_in_bounds(self, pool_var: pool.Pool):
+        """Fish method description"""
         try:
-            self._pos[X] = min(max(self._pos[X], 0), p.get_size()[X] - 1)
-            self._pos[Y] = min(max(self._pos[Y], 0), p.get_size()[Y] - 1)
-        except Exception:
-            pass
+            self._pos[X] = min(max(self._pos[X], 0),
+                               pool_var.get_size()[X] - 1)
+            self._pos[Y] = min(max(self._pos[Y], 0),
+                               pool_var.get_size()[Y] - 1)
         except ValueError:
             print("Oooops!")
 
-    def eat(self, p: pool.Pool):
-        pass
+    def eat(self, pool_var: pool.Pool):
+        """Fish method description"""
 
-    def born(self, p: pool.Pool):
+    def born(self, pool_var: pool.Pool):
+        """Fish method description"""
         if random.randint(1, 10) < self._born_rate:
-            p.fill(self.__class__, self._born_num)
+            pool_var.fill(self.__class__, self._born_num)
 
 
 class Predator(Fish):
+    """Predator class with methods"""
     with open("predator.json", 'rt') as f:
         state = json.load(f)
 
@@ -60,20 +73,21 @@ class Predator(Fish):
         super().__init__(x, y)
         self.__dict__.update(self.state)
 
-    def _move(self, p: pool.Pool=[]):
+    def _move(self, pool_var: pool.Pool):
         self._is_not_hungry -= 1
-        victim = p.get_nearest_victim(*self._pos)
-        self._pos[X]+= 2 if victim[X]>self._pos[X] else -2
-        self._pos[Y]+= 2 if victim[Y]>self._pos[Y] else -2
+        victim = pool_var.get_nearest_victim(*self._pos)
+        self._pos[X] += 2 if victim[X] > self._pos[X] else -2
+        self._pos[Y] += 2 if victim[Y] > self._pos[Y] else -2
 
-    def eat(self, p: pool.Pool) -> int:
+    def eat(self, pool_var: pool.Pool) -> None:
         """
+        Eat method description
         """
-        victims = p.get_victim(self.get_pos())
+        victims = pool_var.get_victim(self.get_pos())
         if victims:
             self._is_not_hungry += 3
             for victim in victims:
-                p.kill(victim)
+                pool_var.kill(victim)
 
     def __repr__(self):
         return "P"
@@ -83,6 +97,7 @@ class Predator(Fish):
 
 
 class Victim(Fish):
+    """Victim class with methods"""
     with open("victim.json", 'rt') as f:
         state = json.load(f)
 
@@ -90,11 +105,12 @@ class Victim(Fish):
         super().__init__(x, y)
         self.__dict__.update(self.state)
 
-    def _move(self, p: pool.Pool):
-        self._pos[X] += random.randint(-1,1)
-        self._pos[Y] += random.randint(-1,1)
+    def _move(self, pool_var: pool.Pool):
+        self._pos[X] += random.randint(-1, 1)
+        self._pos[Y] += random.randint(-1, 1)
 
     def __repr__(self):
         return "V"
 
-    is_victim = lambda self: True
+    def is_victim(self):
+        return True

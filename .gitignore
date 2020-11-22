@@ -102,3 +102,9 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+.DS_Store
+.idea/inspectionProfiles/profiles_settings.xml
+.idea/misc.xml
+.idea/modules.xml
+.idea/vcs.xml
+.idea/py_pool_game.iml

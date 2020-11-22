@@ -1,13 +1,13 @@
-
+"""Main module"""
 import pool
 import fishes
 
 import config
 
 if __name__ == '__main__':
-    p = pool.Pool()
-    p.fill(fishes.Predator, int(config.config['App']['Predators']))
-    p.fill(fishes.Victim, int(config.config['App']['Victims']))
+    POOL = pool.Pool()
+    POOL.fill(fishes.Predator, int(config.CONFIG['App']['Predators']))
+    POOL.fill(fishes.Victim, int(config.CONFIG['App']['Victims']))
     for i in range(config.get_ticks()):
-        print(p)
-        p.tick()
+        print(POOL)
+        POOL.tick()
